@@ -125,7 +125,8 @@ bool OsmAnd::UnresolvedMapStyle_P::processStartElement(OsmAnd::MapStyleRulesetTy
         const auto possibleValues = attribs.value(QStringLiteral("possibleValues")).toString()
         .split(QLatin1Char(','), QString::SkipEmptyParts);
         const auto defaultValueDescription = attribs.value(QStringLiteral("defaultValueDescription")).toString();
-        
+        const auto defaultValue = attribs.value(QStringLiteral("defaultValue")).toString();
+
         MapStyleValueDataType dataType;
         if (valueType == QStringLiteral("string"))
             dataType = MapStyleValueDataType::String;
@@ -147,7 +148,8 @@ bool OsmAnd::UnresolvedMapStyle_P::processStartElement(OsmAnd::MapStyleRulesetTy
                                                                           name,
                                                                           dataType,
                                                                           possibleValues,
-                                                                          defaultValueDescription));
+                                                                          defaultValueDescription,
+                                                                          defaultValue));
         parameters.push_back(qMove(newParameter));
     }
     else if (tagName == QStringLiteral("renderingAttribute"))

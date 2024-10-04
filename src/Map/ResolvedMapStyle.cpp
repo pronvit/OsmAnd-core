@@ -256,7 +256,8 @@ OsmAnd::ResolvedMapStyle::Parameter::Parameter(
     const StringId nameId_,
     const MapStyleValueDataType dataType_,
     const QList<MapStyleConstantValue>& possibleValues_,
-    const QString& defaultValueDescription_)
+    const QString& defaultValueDescription_,
+    const QString& defaultValue_)
     : title(title_)
     , description(description_)
     , category(category_)
@@ -264,6 +265,7 @@ OsmAnd::ResolvedMapStyle::Parameter::Parameter(
     , dataType(dataType_)
     , possibleValues(possibleValues_)
     , defaultValueDescription(defaultValueDescription_)
+    , defaultValue(defaultValue_)
 {
 }
 
@@ -304,6 +306,11 @@ QList<OsmAnd::MapStyleConstantValue> OsmAnd::ResolvedMapStyle::Parameter::getPos
 QString OsmAnd::ResolvedMapStyle::Parameter::getDefaultValueDescription() const
 {
     return defaultValueDescription;
+}
+
+QString OsmAnd::ResolvedMapStyle::Parameter::getDefaultValue() const
+{
+    return defaultValue;
 }
 
 OsmAnd::ResolvedMapStyle::SymbolClass::SymbolClass(

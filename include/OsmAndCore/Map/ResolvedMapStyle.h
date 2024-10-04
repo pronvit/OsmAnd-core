@@ -138,7 +138,8 @@ namespace OsmAnd
                 const SWIG_CLARIFY(IMapStyle, StringId) nameId,
                 const MapStyleValueDataType dataType,
                 const QList<MapStyleConstantValue>& possibleValues,
-                const QString& defaultValueDescription);
+                const QString& defaultValueDescription,
+                const QString& defaultValue);
             virtual ~Parameter();
 
 #if !defined(SWIG)
@@ -149,6 +150,7 @@ namespace OsmAnd
             MapStyleValueDataType dataType;
             QList<MapStyleConstantValue> possibleValues;
             QString defaultValueDescription;
+            QString defaultValue;
 #endif // !defined(SWIG)
             virtual QString getTitle() const Q_DECL_OVERRIDE;
             virtual QString getDescription() const Q_DECL_OVERRIDE;
@@ -157,6 +159,7 @@ namespace OsmAnd
             virtual MapStyleValueDataType getDataType() const Q_DECL_OVERRIDE;
             virtual QList<MapStyleConstantValue> getPossibleValues() const Q_DECL_OVERRIDE;
             virtual QString getDefaultValueDescription() const Q_DECL_OVERRIDE;
+            virtual QString getDefaultValue() const Q_DECL_OVERRIDE;
         };
 
         class OSMAND_CORE_API SymbolClass Q_DECL_FINAL

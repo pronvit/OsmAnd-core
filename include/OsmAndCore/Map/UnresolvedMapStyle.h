@@ -96,7 +96,8 @@ namespace OsmAnd
                 const QString& name,
                 const MapStyleValueDataType dataType,
                 const QStringList& possibleValues,
-                const QString& defaultValueDescription);
+                const QString& defaultValueDescription,
+                const QString& defaultValue);
             ~Parameter();
 
             QString title;
@@ -106,6 +107,7 @@ namespace OsmAnd
             MapStyleValueDataType dataType;
             QStringList possibleValues;
             QString defaultValueDescription;
+            QString defaultValue;
         };
 
         class OSMAND_CORE_API SymbolClass Q_DECL_FINAL

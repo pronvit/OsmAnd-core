@@ -1836,16 +1836,16 @@ void OsmAnd::AtlasMapRendererSymbolsStage::obtainRenderablesFromBillboardSymbol(
 
     // Test against visible frustum area (if allowed)
     const bool isntMarker = !std::dynamic_pointer_cast<const MapMarker::SymbolsGroup>(mapSymbolGroup);
-    if (isntMarker && !debugSettings->disableSymbolsFastCheckByFrustum &&
-        allowFastCheckByFrustum && mapSymbol->allowFastCheckByFrustum)
-    {
-        if (!renderer->isPointVisible(internalState, positionInWorld))
-        {
-            if (metric)
-                metric->billboardSymbolsRejectedByFrustum++;
-            return;
-        }
-    }
+//    if (isntMarker && !debugSettings->disableSymbolsFastCheckByFrustum &&
+//        allowFastCheckByFrustum && mapSymbol->allowFastCheckByFrustum)
+//    {
+//        if (!renderer->isPointVisible(internalState, positionInWorld))
+//        {
+//            if (metric)
+//                metric->billboardSymbolsRejectedByFrustum++;
+//            return;
+//        }
+//    }
 
     //////////////////////////////////////////////////////////////////////////
     /*
@@ -2094,12 +2094,12 @@ void OsmAnd::AtlasMapRendererSymbolsStage::obtainRenderablesFromOnSurfaceSymbol(
                     }
                 }
             }
-            if (!internalState.globalFrustum2D31.test(symbolRect) && !internalState.extraFrustum2D31.test(symbolRect))
-            {
-                if (metric)
-                    metric->onSurfaceSymbolsRejectedByFrustum++;
-                return;
-            }
+//            if (!internalState.globalFrustum2D31.test(symbolRect) && !internalState.extraFrustum2D31.test(symbolRect))
+//            {
+//                if (metric)
+//                    metric->onSurfaceSymbolsRejectedByFrustum++;
+//                return;
+//            }
         }
         else
         {
@@ -2107,12 +2107,12 @@ void OsmAnd::AtlasMapRendererSymbolsStage::obtainRenderablesFromOnSurfaceSymbol(
             testPoint = Utilities::normalizeCoordinates(position31, ZoomLevel31);
             if (height != 0.0f)
                 getRenderer()->getProjectedLocation(internalState, currentState, position31, height, testPoint);
-            if (!internalState.globalFrustum2D31.test(testPoint) && !internalState.extraFrustum2D31.test(testPoint))
-            {
-                if (metric)
-                    metric->onSurfaceSymbolsRejectedByFrustum++;
-                return;
-            }
+//            if (!internalState.globalFrustum2D31.test(testPoint) && !internalState.extraFrustum2D31.test(testPoint))
+//            {
+//                if (metric)
+//                    metric->onSurfaceSymbolsRejectedByFrustum++;
+//                return;
+//            }
         }
     }
 
@@ -2310,12 +2310,12 @@ void OsmAnd::AtlasMapRendererSymbolsStage::obtainRenderablesFromOnPathSymbol(
         && onPathMapSymbol->allowFastCheckByFrustum;
     if (checkVisibility)
     {
-        if (!renderer->isPointVisible(internalState, pinPointInWorld))
-        {
-            if (metric)
-                metric->onPathSymbolsRejectedByFrustum++;
-            return;
-        }
+//        if (!renderer->isPointVisible(internalState, pinPointInWorld))
+//        {
+//            if (metric)
+//                metric->onPathSymbolsRejectedByFrustum++;
+//            return;
+//        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -2638,44 +2638,44 @@ void OsmAnd::AtlasMapRendererSymbolsStage::obtainRenderablesFromOnPathSymbol(
 
             if (isntMarker && allowFastCheckByFrustum)
             {
-                // Make sure the symbol is at least two-thirds visible
-                if (glyphsPlacement.size() > 1)
-                {
-                    glm::vec3 firstPoint, lastPoint;
-                    if (is2D)
-                    {
-                        firstPoint = rotatedElevatedBBoxInWorld[0];
-                        lastPoint = rotatedElevatedBBoxInWorld[rotatedElevatedBBoxInWorld.size() - 1];
-                    }
-                    else
-                    {
-                        auto placement = glyphsPlacement[0];
-                        firstPoint = glm::vec3(placement.anchorPoint.x, placement.elevation, placement.anchorPoint.y);
-                        placement = glyphsPlacement[glyphsPlacement.size() - 1];
-                        lastPoint = glm::vec3(placement.anchorPoint.x, placement.elevation, placement.anchorPoint.y);
-                    }
-                    glm::vec2 pointsOnScreen[4];
-                    pointsOnScreen[0] = glm_extensions::project(
-                        firstPoint,
-                        internalState.mPerspectiveProjectionView,
-                        internalState.glmViewport).xy();
-                    pointsOnScreen[3] = glm_extensions::project(
-                        lastPoint,
-                        internalState.mPerspectiveProjectionView,
-                        internalState.glmViewport).xy();
-                    const auto oneThird = (pointsOnScreen[3] - pointsOnScreen[0]) / 3.0f;
-                    pointsOnScreen[1] = pointsOnScreen[0] + oneThird;
-                    pointsOnScreen[2] = pointsOnScreen[1] + oneThird;
-                    int countPointsOnScreen = 0;
-                    for (int i = 0; i < 4; i++)
-                    {
-                        if (pointsOnScreen[i].x >= 0 && pointsOnScreen[i].x <= currentState.windowSize.x
-                            && pointsOnScreen[i].y >= 0 && pointsOnScreen[i].y <= currentState.windowSize.y)
-                            countPointsOnScreen++;
-                    }
-                    if (countPointsOnScreen < 3)
-                        return;
-                }
+//                // Make sure the symbol is at least two-thirds visible
+//                if (glyphsPlacement.size() > 1)
+//                {
+//                    glm::vec3 firstPoint, lastPoint;
+//                    if (is2D)
+//                    {
+//                        firstPoint = rotatedElevatedBBoxInWorld[0];
+//                        lastPoint = rotatedElevatedBBoxInWorld[rotatedElevatedBBoxInWorld.size() - 1];
+//                    }
+//                    else
+//                    {
+//                        auto placement = glyphsPlacement[0];
+//                        firstPoint = glm::vec3(placement.anchorPoint.x, placement.elevation, placement.anchorPoint.y);
+//                        placement = glyphsPlacement[glyphsPlacement.size() - 1];
+//                        lastPoint = glm::vec3(placement.anchorPoint.x, placement.elevation, placement.anchorPoint.y);
+//                    }
+//                    glm::vec2 pointsOnScreen[4];
+//                    pointsOnScreen[0] = glm_extensions::project(
+//                        firstPoint,
+//                        internalState.mPerspectiveProjectionView,
+//                        internalState.glmViewport).xy();
+//                    pointsOnScreen[3] = glm_extensions::project(
+//                        lastPoint,
+//                        internalState.mPerspectiveProjectionView,
+//                        internalState.glmViewport).xy();
+//                    const auto oneThird = (pointsOnScreen[3] - pointsOnScreen[0]) / 3.0f;
+//                    pointsOnScreen[1] = pointsOnScreen[0] + oneThird;
+//                    pointsOnScreen[2] = pointsOnScreen[1] + oneThird;
+//                    int countPointsOnScreen = 0;
+//                    for (int i = 0; i < 4; i++)
+//                    {
+//                        if (pointsOnScreen[i].x >= 0 && pointsOnScreen[i].x <= currentState.windowSize.x
+//                            && pointsOnScreen[i].y >= 0 && pointsOnScreen[i].y <= currentState.windowSize.y)
+//                            countPointsOnScreen++;
+//                    }
+//                    if (countPointsOnScreen < 3)
+//                        return;
+//                }
 
                 if (!applyOnScreenVisibilityFiltering(renderable->visibleBBox, intersections, metric))
                     return;

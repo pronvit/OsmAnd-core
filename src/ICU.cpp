@@ -333,7 +333,8 @@ OSMAND_CORE_API QVector<int> OSMAND_CORE_CALL OsmAnd::ICU::getTextWrapping(
     }
 
     // Set text for breaking
-    pBreakIterator->setText(UnicodeString(reinterpret_cast<const UChar*>(input.unicode()), input.length()));
+    UnicodeString us(reinterpret_cast<const UChar*>(input.unicode()), input.length());
+    pBreakIterator->setText(us);
 
     auto cursor = 0;
     while(ok && cursor < input.length())

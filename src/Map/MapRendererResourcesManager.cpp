@@ -619,7 +619,7 @@ void OsmAnd::MapRendererResourcesManager::resetResourceWorkerThreadsLimit()
 #if OSMAND_SINGLE_MAP_RENDERER_RESOURCES_WORKER
     _resourcesRequestWorkerPool.setMaxThreadCount(1);
 #else // !OSMAND_SINGLE_MAP_RENDERER_RESOURCES_WORKER
-    _resourcesRequestWorkerPool.setMaxThreadCount(QThread::idealThreadCount() / 2);
+    _resourcesRequestWorkerPool.setMaxThreadCount(4);
 #endif // OSMAND_SINGLE_MAP_RENDERER_RESOURCES_WORKER
 
     if (_resourcesRequestWorkerPool.maxThreadCount() > 0)

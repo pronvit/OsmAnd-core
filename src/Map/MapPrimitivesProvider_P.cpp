@@ -164,6 +164,20 @@ bool OsmAnd::MapPrimitivesProvider_P::obtainTiledPrimitives(
         metric ? &submetric : nullptr);
     if (metric && submetric)
         metric->addOrReplaceSubmetric(submetric);
+
+    if (queryController->isAborted())
+    {
+        tileEntry->setState(TileState::Cancelled);
+        {
+            QWriteLocker scopedLocker(&tileEntry->loadedConditionLock);
+            tileEntry->loadedCondition.wakeAll();
+        }
+        _tileReferences.removeEntry(request.tileId, request.zoom, empty);
+        tileEntry.reset();
+
+        return false;
+    }
+
     if (!dataTile)
     {
         // Store flag that there was no data and mark tile entry as 'Loaded'

@@ -10,6 +10,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtx/fast_trigonometry.hpp>
 #include "restore_internal_warnings.h"
 
 #include "ignore_warnings_on_external_includes.h"
@@ -3191,6 +3192,8 @@ bool OsmAnd::AtlasMapRendererSymbolsStage::projectFromWorldToScreen(
     bool visible = true;
     bool prevVisible = true;
     const auto r = getRenderer();
+    const auto inverse = glm::inverse(internalState.mPerspectiveProjectionView);
+
     for (auto idx = 0u; idx < pointsCount; idx++)
     {
         prevIdx = idx - 1;
@@ -3252,10 +3255,9 @@ bool OsmAnd::AtlasMapRendererSymbolsStage::projectFromWorldToScreen(
                             internalState.mPerspectiveProjectionView,
                             internalState.glmViewport).xy();
                         worldDistance = glm::distance(internalState.worldCameraPosition, pointInWorld);
-                        pointNearInWorld = glm::unProject(
+                        pointNearInWorld = glm_extensions::unProject(
                             glm::vec3(pointOnScreen.x, currentState.windowSize.y - pointOnScreen.y, 0.0f),
-                            internalState.mCameraView,
-                            internalState.mPerspectiveProjection,
+                            inverse,
                             internalState.glmViewport);
                         screenDistance = glm::distance(internalState.worldCameraPosition, pointNearInWorld);
                         computedPathData.pathInWorld[prevIdx] = pointInWorld.xz();
@@ -3297,9 +3299,9 @@ bool OsmAnd::AtlasMapRendererSymbolsStage::projectFromWorldToScreen(
             worldLengthOnPlane = glm::distance(
                 glm::vec2(prevPointInWorld.x, prevPointInWorld.z), glm::vec2(pointInWorld.x, pointInWorld.z));
             screenLengthInPixels = glm::distance(prevPointOnScreen, pointOnScreen);
-            worldAngle = qAcos(qBound(-1.0f, (prevWorldDistance * prevWorldDistance + worldLength * worldLength
+            worldAngle = glm::fastAcos(qBound(-1.0f, (prevWorldDistance * prevWorldDistance + worldLength * worldLength
                 - worldDistance * worldDistance) / (2.0f * prevWorldDistance * worldLength), 1.0f));
-            screenAngle = qAcos(qBound(-1.0f, (prevScreenDistance * prevScreenDistance + screenLength * screenLength
+            screenAngle = glm::fastAcos(qBound(-1.0f, (prevScreenDistance * prevScreenDistance + screenLength * screenLength
                 - screenDistance * screenDistance) / (2.0f * prevScreenDistance * screenLength), 1.0f));
             computedPathData.pathSegmentsLengthsOnRelief[prevIdx] = worldLength;
             computedPathData.pathSegmentsLengthsInWorld[prevIdx] = worldLengthOnPlane;

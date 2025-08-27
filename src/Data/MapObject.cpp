@@ -270,12 +270,12 @@ inline bool OsmAnd::MapObject::shouldChangeArea(const AreaI& prevArea, const Are
     bool result = 
         nextArea.left() < static_cast<int64_t>(prevArea.left()) - outerDeltaWidth
         || nextArea.right() > static_cast<int64_t>(prevArea.right()) + outerDeltaWidth
-        || nextArea.top() < static_cast<int64_t>(prevArea.top()) - outerDeltaWidth
-        || nextArea.bottom() > static_cast<int64_t>(prevArea.bottom()) + outerDeltaWidth
+        || nextArea.top() < static_cast<int64_t>(prevArea.top()) - outerDeltaHeight
+        || nextArea.bottom() > static_cast<int64_t>(prevArea.bottom()) + outerDeltaHeight
         || nextArea.left() > static_cast<int64_t>(prevArea.left()) + innerDeltaWidth
         || nextArea.right() < static_cast<int64_t>(prevArea.right()) - innerDeltaWidth
-        || nextArea.top() > static_cast<int64_t>(prevArea.top()) + innerDeltaWidth
-        || nextArea.bottom() < static_cast<int64_t>(prevArea.bottom()) - innerDeltaWidth;
+        || nextArea.top() > static_cast<int64_t>(prevArea.top()) + innerDeltaHeight
+        || nextArea.bottom() < static_cast<int64_t>(prevArea.bottom()) - innerDeltaHeight;
 
     return result;
 }

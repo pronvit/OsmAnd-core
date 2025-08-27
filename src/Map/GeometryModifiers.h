@@ -186,9 +186,9 @@ struct OSMAND_CORE_API GeometryModifiers Q_DECL_FINAL
 		s += C->positionXYZD[0] * A->positionXYZD[2] - C->positionXYZD[2] * A->positionXYZD[0];
 		if (s < 0.0f)
 		{
-			VectorMapSymbol::Vertex* D = B;
-			B = C;
-			C = D;
+			VectorMapSymbol::Vertex D = *B;
+			*B = *C;
+			*C = D;
 		}
 	}
 

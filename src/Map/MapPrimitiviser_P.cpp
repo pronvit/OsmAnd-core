@@ -2440,6 +2440,7 @@ bool OsmAnd::MapPrimitiviser_P::polygonizeCoastlines(
             const auto & mapObj = convertFromLegacy(legacyCoastline.obj);
             size += mapObj->points31.size();
             outVectorized.push_back(mapObj);
+            delete legacyCoastline.obj;
         }
         if (size == 3)
         {

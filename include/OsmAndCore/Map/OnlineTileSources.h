@@ -51,7 +51,7 @@ namespace OsmAnd
         static const QString normalizeUrl(QString &url);
         
         static bool createTileSourceTemplate(const QString& metaInfoPath, std::shared_ptr<Source>& source);
-        static void installTileSource(const std::shared_ptr<const Source> toInstall, const QString& cachePath);
+        static void installTileSource(const std::shared_ptr<const Source> toInstall, const QString& storagePath);
         static std::shared_ptr<const OnlineTileSources> getBuiltIn();
         static std::shared_ptr<Source> createTileSourceTemplate(const QXmlStreamAttributes &attributes);
         

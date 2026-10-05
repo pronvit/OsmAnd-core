@@ -98,9 +98,9 @@ const QString OsmAnd::OnlineTileSources::normalizeUrl(QString &url)
     return url;
 }
 
-void OsmAnd::OnlineTileSources::installTileSource(const std::shared_ptr<const Source> toInstall, const QString& cachePath)
+void OsmAnd::OnlineTileSources::installTileSource(const std::shared_ptr<const Source> toInstall, const QString& storagePath)
 {
-    OnlineTileSources_P::installTileSource(toInstall, cachePath);
+    OnlineTileSources_P::installTileSource(toInstall, storagePath);
 }
 
 QList<QString> OsmAnd::OnlineTileSources::parseRandoms(const QString &randoms)

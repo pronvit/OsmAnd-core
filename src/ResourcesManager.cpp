@@ -18,7 +18,8 @@ OsmAnd::ResourcesManager::ResourcesManager(
     const QString& appVersion_ /*= QString::null*/,
     const QString& repositoryBaseUrl_ /*= QLatin1String("http://download.osmand.net")*/,
     const QString& indexesUrl_ /*= QLatin1String("http://download.osmand.net/get_indexes")*/,
-    const std::shared_ptr<const IWebClient>& webClient /*= std::shared_ptr<const IWebClient>(new WebClient())*/)
+    const std::shared_ptr<const IWebClient>& webClient /*= std::shared_ptr<const IWebClient>(new WebClient())*/,
+    const QString& onlineTileSourcesPath_ /*= QString::null*/)
     : _p(new ResourcesManager_P(this, webClient))
     , localStoragePath(localStoragePath_)
     , userStoragePath(userStoragePath_)
@@ -33,6 +34,9 @@ OsmAnd::ResourcesManager::ResourcesManager(
     , localCachePath(!localCachePath_.isNull()
         ? localCachePath_
         : QStandardPaths::writableLocation(QStandardPaths::CacheLocation))
+    , onlineTileSourcesPath(!onlineTileSourcesPath_.isEmpty()
+        ? onlineTileSourcesPath_
+        : localCachePath)
     , appVersion(appVersion_)
     , onlineTileSources(_p->onlineTileSources)
     , mapStylesCollection(_p->mapStylesCollection)
@@ -43,6 +47,7 @@ OsmAnd::ResourcesManager::ResourcesManager(
     QDir(userStoragePath).mkpath(QLatin1String("."));
     QDir(localTemporaryPath).mkpath(QLatin1String("."));
     QDir(hiddenMapsPath).mkpath(QLatin1String("."));
+    QDir(onlineTileSourcesPath).mkpath(QLatin1String("."));
 
     _p->initialize();
     _p->inflateBuiltInResources();

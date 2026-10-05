@@ -366,7 +366,7 @@ bool OsmAnd::OnlineTileSources_P::createTileSourceTemplate(const QString& metaIn
     return false;
 }
 
-void OsmAnd::OnlineTileSources_P::installTileSource(const std::shared_ptr<const OnlineTileSources::Source> toInstall, const QString& cachePath)
+void OsmAnd::OnlineTileSources_P::installTileSource(const std::shared_ptr<const OnlineTileSources::Source> toInstall, const QString& storagePath)
 {
     QHash<QString, QString> params;
     params.insert(QStringLiteral("url_template"), toInstall->urlToLoad);
@@ -390,7 +390,7 @@ void OsmAnd::OnlineTileSources_P::installTileSource(const std::shared_ptr<const 
         params.insert(QStringLiteral("user_agent"), toInstall->userAgent);
     
     QString name = toInstall->name;
-    QString path = cachePath + QDir::separator() + name;
+    QString path = storagePath + QDir::separator() + name;
     QDir dir;
     if (!dir.exists(path))
         dir.mkpath(path);

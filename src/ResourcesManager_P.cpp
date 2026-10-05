@@ -414,7 +414,7 @@ bool OsmAnd::ResourcesManager_P::loadLocalResourcesFromPath(
                                              ResourceType::WeatherForecast);
         
         // Find ResourceType::OnlineTileSources -> ".metainfo" files
-        loadLocalResourcesFromPath_OnlineTileSourcesResource(owner->localCachePath, outResult);
+        loadLocalResourcesFromPath_OnlineTileSourcesResource(owner->onlineTileSourcesPath, outResult);
     }
     else
     {
@@ -930,7 +930,7 @@ void OsmAnd::ResourcesManager_P::installBuiltInTileSources()
 {
      for (const auto& tileSource : OnlineTileSources::getBuiltIn()->getCollection())
      {
-        OnlineTileSources::installTileSource(tileSource, owner->localCachePath);
+        OnlineTileSources::installTileSource(tileSource, owner->onlineTileSourcesPath);
         installTilesResource(tileSource);
      }
 }

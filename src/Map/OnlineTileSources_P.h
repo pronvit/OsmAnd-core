@@ -54,7 +54,7 @@ namespace OsmAnd
         bool removeSource(const QString& sourceName);
 
         static bool createTileSourceTemplate(const QString& metaInfoPath, std::shared_ptr<Source>& source);
-        static void installTileSource(const std::shared_ptr<const OnlineTileSources::Source> toInstall, const QString& cachePath);
+        static void installTileSource(const std::shared_ptr<const OnlineTileSources::Source> toInstall, const QString& storagePath);
         
         static std::shared_ptr<const OnlineTileSources> getBuiltIn();
 

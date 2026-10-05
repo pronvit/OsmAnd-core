@@ -258,7 +258,8 @@ namespace OsmAnd
             const QString& appVersion = {},
             const QString& repositoryBaseUrl = QLatin1String("http://download.osmand.net"),
             const QString& indexesUrl = QLatin1String("http://download.osmand.net/get_indexes"),
-            const std::shared_ptr<const IWebClient>& webClient = std::shared_ptr<const IWebClient>(new WebClient()));
+            const std::shared_ptr<const IWebClient>& webClient = std::shared_ptr<const IWebClient>(new WebClient()),
+            const QString& onlineTileSourcesPath = {});
         virtual ~ResourcesManager();
 
         const QString localStoragePath;
@@ -270,6 +271,8 @@ namespace OsmAnd
         const QString indexesUrl;
         const QString hiddenMapsPath;
         const QString localCachePath;
+        // ".metainfo" definitions. Tile bitmaps stay in localCachePath. Defaults to localCachePath.
+        const QString onlineTileSourcesPath;
         const QString appVersion;
 
         // Generic accessors:

@@ -47,10 +47,10 @@ void OsmAnd::VectorLinesCollection::removeAllLines()
     _p->removeAllLines();
 }
 
-const std::shared_ptr<OsmAnd::VectorLineArrowsProvider> OsmAnd::VectorLinesCollection::getVectorLineArrowsProvider()
+const std::shared_ptr<OsmAnd::VectorLineArrowsProvider> OsmAnd::VectorLinesCollection::getVectorLineArrowsProvider(const bool recreate)
 {
     auto arrowsProvider = _arrowsProvider.lock();
-    if (!arrowsProvider)
+    if (recreate || !arrowsProvider)
     {
         arrowsProvider = std::make_shared<VectorLineArrowsProvider>(shared_from_this());
         _arrowsProvider = std::weak_ptr<VectorLineArrowsProvider>(arrowsProvider);

@@ -45,7 +45,7 @@ namespace OsmAnd
         bool removeLine(const std::shared_ptr<OsmAnd::VectorLine>& line);
         void removeAllLines();
 
-        const std::shared_ptr<VectorLineArrowsProvider> getVectorLineArrowsProvider();
+        const std::shared_ptr<VectorLineArrowsProvider> getVectorLineArrowsProvider(const bool recreate = false);
 
         virtual QList<IMapKeyedSymbolsProvider::Key> getProvidedDataKeys() const Q_DECL_OVERRIDE;
 

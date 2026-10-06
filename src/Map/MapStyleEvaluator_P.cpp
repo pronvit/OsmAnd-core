@@ -49,6 +49,19 @@ OsmAnd::MapStyleConstantValue OsmAnd::MapStyleEvaluator_P::evaluateConstantValue
     IntermediateEvaluationResult* outResultStorage,
     OnDemand<IntermediateEvaluationResult>& intermediateEvaluationResult) const
 {
+    if (resolvedValue.asDynamicValue.objectAttributeNameId != IMapStyle::EmptyStringId)
+    {
+        MapStyleConstantValue parsed;
+        if (tryParseObjectAttribute(
+                mapObject,
+                dataType,
+                false,
+                resolvedValue.asDynamicValue.objectAttributeNameId,
+                parsed))
+            return parsed;
+        return MapStyleConstantValue();
+    }
+
     if (!resolvedValue.isDynamic
         || resolvedValue.asDynamicValue.symbolClasses || resolvedValue.asDynamicValue.symbolClassTemplates)
         return resolvedValue.asConstantValue;
@@ -94,6 +107,24 @@ OsmAnd::MapStyleConstantValue OsmAnd::MapStyleEvaluator_P::evaluateConstantValue
         inputValues,
         outResultStorage,
         intermediateEvaluationResult);
+}
+
+bool OsmAnd::MapStyleEvaluator_P::tryParseObjectAttribute(
+    const MapObject* const mapObject,
+    const MapStyleValueDataType dataType,
+    const bool isComplex,
+    const IMapStyle::StringId attributeNameId,
+    MapStyleConstantValue& outValue) const
+{
+    if (!mapObject || attributeNameId == IMapStyle::EmptyStringId || dataType == MapStyleValueDataType::String)
+        return false;
+
+    const auto tag = owner->mapStyle->getStringById(attributeNameId);
+    const auto text = mapObject->getResolvedAttribute(QStringRef(&tag));
+    if (text.isEmpty())
+        return false;
+
+    return MapStyleConstantValue::parse(text, dataType, isComplex, outValue);
 }
 
 bool OsmAnd::MapStyleEvaluator_P::evaluate(
@@ -422,6 +453,51 @@ void OsmAnd::MapStyleEvaluator_P::postprocessEvaluationResult(
 
         const auto valueDefId = static_cast<IMapStyle::ValueDefinitionId>(idx);
         const auto& valueDef = owner->mapStyle->getValueDefinitionRefById(valueDefId);
+
+        if (value.isDynamic && value.asDynamicValue.objectAttributeNameId != IMapStyle::EmptyStringId)
+        {
+            const auto tag = owner->mapStyle->getStringById(value.asDynamicValue.objectAttributeNameId);
+            const auto text = mapObject ? mapObject->getResolvedAttribute(QStringRef(&tag)) : QString();
+            if (text.isEmpty())
+                continue;
+
+            QVariant postprocessedValue;
+            if (valueDef->dataType == MapStyleValueDataType::String)
+            {
+                postprocessedValue = text;
+            }
+            else
+            {
+                MapStyleConstantValue parsed;
+                if (!MapStyleConstantValue::parse(text, valueDef->dataType, valueDef->isComplex, parsed))
+                    continue;
+
+                switch (valueDef->dataType)
+                {
+                    case MapStyleValueDataType::Boolean:
+                        postprocessedValue = (parsed.asSimple.asUInt != 0);
+                        break;
+                    case MapStyleValueDataType::Integer:
+                        postprocessedValue = parsed.isComplex
+                            ? parsed.asComplex.asInt.evaluate(owner->ptScaleFactor)
+                            : parsed.asSimple.asInt;
+                        break;
+                    case MapStyleValueDataType::Float:
+                        postprocessedValue = parsed.isComplex
+                            ? parsed.asComplex.asFloat.evaluate(owner->ptScaleFactor)
+                            : parsed.asSimple.asFloat;
+                        break;
+                    case MapStyleValueDataType::Color:
+                        postprocessedValue = parsed.asSimple.asUInt;
+                        break;
+                    default:
+                        continue;
+                }
+            }
+
+            outResultStorage.setValue(valueDefId, postprocessedValue);
+            continue;
+        }
 
         const auto constantRuleValue = evaluateConstantValue(
             mapObject,

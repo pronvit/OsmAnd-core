@@ -11,6 +11,7 @@ OsmAnd::IMapStyle::~IMapStyle()
 OsmAnd::IMapStyle::Value::Value()
     : isDynamic(false)
 {
+    asDynamicValue.objectAttributeNameId = EmptyStringId;
 }
 
 OsmAnd::IMapStyle::Value::~Value()

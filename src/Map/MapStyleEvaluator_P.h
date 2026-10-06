@@ -59,6 +59,13 @@ namespace OsmAnd
             IntermediateEvaluationResult* const outResultStorage,
             OnDemand<IntermediateEvaluationResult>& intermediateEvaluationResult) const;
 
+        bool tryParseObjectAttribute(
+            const MapObject* const mapObject,
+            const MapStyleValueDataType dataType,
+            const bool isComplex,
+            const IMapStyle::StringId attributeNameId,
+            MapStyleConstantValue& outValue) const;
+
         bool evaluate(
             const MapObject* const mapObject,
             const std::shared_ptr<const IMapStyle::IRuleNode>& ruleNode,

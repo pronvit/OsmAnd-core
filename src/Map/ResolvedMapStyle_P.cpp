@@ -135,6 +135,23 @@ bool OsmAnd::ResolvedMapStyle_P::resolveValue(
     const bool isComplex,
     ResolvedValue& outValue)
 {
+    // "attr:name" copies that object attribute into this output, parsed as the output's type.
+    if (input.startsWith(QLatin1String("attr:")))
+    {
+        const auto attributeName = input.mid(5);
+        if (attributeName.isEmpty())
+        {
+            LogPrintf(LogSeverityLevel::Error,
+                "Attribute reference '%s' has no name",
+                qPrintable(input));
+            return false;
+        }
+
+        outValue.isDynamic = true;
+        outValue.asDynamicValue.objectAttributeNameId = addStringToLUT(attributeName);
+        return true;
+    }
+
     if (input.startsWith(QLatin1Char('$')))
     {
         const auto constantOrAttributeName = input.mid(1);

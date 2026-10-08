@@ -184,7 +184,9 @@ std::shared_ptr<const OsmAnd::ResolvedMapStyle> OsmAnd::MapStylesCollection_P::g
         }
     }
 
-    return ResolvedMapStyle::resolveMapStylesChain(copyAs< QList< std::shared_ptr<const UnresolvedMapStyle> > >(stylesChain));;
+    resolvedStyle = ResolvedMapStyle::resolveMapStylesChain(
+        copyAs< QList< std::shared_ptr<const UnresolvedMapStyle> > >(stylesChain));
+    return resolvedStyle;
 }
 
 QString OsmAnd::MapStylesCollection_P::getFullyQualifiedStyleName(const QString& name)

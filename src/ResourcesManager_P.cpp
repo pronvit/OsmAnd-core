@@ -2929,7 +2929,12 @@ std::shared_ptr<const OsmAnd::UnresolvedMapStyle> OsmAnd::ResourcesManager_P::Ma
 std::shared_ptr<const OsmAnd::ResolvedMapStyle> OsmAnd::ResourcesManager_P::MapStylesCollectionProxy::getResolvedStyleByName(
     const QString& name) const
 {
+    QMutexLocker scopedLocker(&_resolvedStylesLock);
+
     const auto styleName = normalizeStyleName(name);
+    const auto citResolvedStyle = _resolvedStyles.constFind(styleName);
+    if (citResolvedStyle != _resolvedStyles.cend())
+        return *citResolvedStyle;
 
     // Get style inheritance chain
     QList< std::shared_ptr<UnresolvedMapStyle> > stylesChain;
@@ -2979,7 +2984,11 @@ std::shared_ptr<const OsmAnd::ResolvedMapStyle> OsmAnd::ResourcesManager_P::MapS
         }
     }
 
-    return ResolvedMapStyle::resolveMapStylesChain(copyAs< QList< std::shared_ptr<const UnresolvedMapStyle> > >(stylesChain));
+    const auto resolvedStyle = ResolvedMapStyle::resolveMapStylesChain(
+        copyAs< QList< std::shared_ptr<const UnresolvedMapStyle> > >(stylesChain));
+    if (resolvedStyle)
+        _resolvedStyles.insert(styleName, resolvedStyle);
+    return resolvedStyle;
 }
 
 QString OsmAnd::ResourcesManager_P::MapStylesCollectionProxy::normalizeStyleName(const QString& name)

@@ -172,6 +172,10 @@ namespace OsmAnd
 
         bool isLoaded() const;
         bool load();
+
+        // Drops the parsed tag/value rule trees. Attributes, parameters and symbol classes stay.
+        // The next load() parses the rules again from the original source.
+        void unloadRules();
     };
 }
 

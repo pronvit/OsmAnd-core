@@ -63,6 +63,11 @@ bool OsmAnd::UnresolvedMapStyle::load()
     return _p->load();
 }
 
+void OsmAnd::UnresolvedMapStyle::unloadRules()
+{
+    _p->unloadRules();
+}
+
 OsmAnd::UnresolvedMapStyle::RuleNode::RuleNode(const bool isSwitch_)
     : isSwitch(isSwitch_)
 {

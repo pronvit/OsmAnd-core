@@ -91,6 +91,17 @@ bool OsmAnd::UnresolvedMapStyle_P::parse()
 {
     if (!_source->open(QIODevice::ReadOnly | QIODevice::Text))
         return false;
+
+    // load() can run again after unloadRules(). These are the collections parse() appends to.
+    constants.clear();
+    parameters.clear();
+    attributes.clear();
+    symbolClasses.clear();
+    for (auto& ruleset : rulesets)
+        ruleset.clear();
+    for (auto& ruleset : _rulesets)
+        ruleset.clear();
+
     QXmlStreamReader data(_source.get());
     bool ok = parse(data);
     _source->close();
@@ -663,6 +674,17 @@ bool OsmAnd::UnresolvedMapStyle_P::load()
     }
 
     return true;
+}
+
+void OsmAnd::UnresolvedMapStyle_P::unloadRules()
+{
+    QMutexLocker scopedLocker(&_loadMutex);
+
+    for (auto& ruleset : rulesets)
+        ruleset.clear();
+    for (auto& ruleset : _rulesets)
+        ruleset.clear();
+    _isLoaded.storeRelease(0);
 }
 
 void OsmAnd::XmlTreeSequence::process(

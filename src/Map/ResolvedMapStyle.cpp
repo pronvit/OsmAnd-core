@@ -116,6 +116,13 @@ std::shared_ptr<const OsmAnd::ResolvedMapStyle> OsmAnd::ResolvedMapStyle::resolv
     if (!resolvedStyle->_p->resolve())
         return nullptr;
 
+    // The resolved tree is a copy. The string rule trees are not read again until the next load().
+    for (const auto& unresolvedStyle : unresolvedMapStylesChain)
+    {
+        if (unresolvedStyle)
+            const_cast<UnresolvedMapStyle*>(unresolvedStyle.get())->unloadRules();
+    }
+
     return resolvedStyle;
 }
 

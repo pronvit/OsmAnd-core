@@ -116,6 +116,7 @@ namespace OsmAnd
 
         bool isLoaded() const;
         bool load();
+        void unloadRules();
 
     friend class OsmAnd::UnresolvedMapStyle;
     friend struct OsmAnd::XmlTreeSequence;

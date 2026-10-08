@@ -279,6 +279,9 @@ namespace OsmAnd
             static QString normalizeStyleName(const QString& name);
             std::shared_ptr<UnresolvedMapStyle> getEditableStyleByName(const QString& name) const;
             QList<std::shared_ptr<OsmAnd::UnresolvedMapStyle>> getEditableStyleAddons() const;
+
+            mutable QHash< QString, std::shared_ptr<const ResolvedMapStyle> > _resolvedStyles;
+            mutable QMutex _resolvedStylesLock;
         protected:
             MapStylesCollectionProxy(ResourcesManager_P* owner);
         public:

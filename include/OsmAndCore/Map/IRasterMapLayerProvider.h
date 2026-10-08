@@ -55,6 +55,27 @@ namespace OsmAnd
     public:
         virtual ~IRasterMapLayerProvider();
 
+        // Coarser zoom kept under an online raster map so missing tiles are not empty.
+        // A negative value is levels above the current view. -3 covers 64 current tiles.
+        static constexpr int RasterLayerOverviewZoomOffset = -5;
+
+        static bool isRetainedOverviewZoom(const ZoomLevel zoom, const ZoomLevel lastRequestedZoom)
+        {
+            return RasterLayerOverviewZoomOffset < 0
+                && static_cast<int>(zoom) == static_cast<int>(lastRequestedZoom) + RasterLayerOverviewZoomOffset;
+        }
+
+        static bool isRasterZoomStillWanted(const ZoomLevel zoom, const ZoomLevel lastRequestedZoom)
+        {
+            return zoom == lastRequestedZoom || isRetainedOverviewZoom(zoom, lastRequestedZoom);
+        }
+
+        // Online raster maps opt in. Vector, GPX, terrain, and offline sqlite layers do not.
+        virtual bool retainsOverviewZoom() const
+        {
+            return false;
+        }
+
         virtual uint32_t getTileSize() const = 0;
         virtual float getTileDensityFactor() const = 0;
 

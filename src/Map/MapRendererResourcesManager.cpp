@@ -1131,6 +1131,8 @@ void OsmAnd::MapRendererResourcesManager::requestNeededTiledResources(
     std::shared_ptr<IMapDataProvider> provider_;
     obtainProviderFor(static_cast<MapRendererBaseResourcesCollection*>(resourcesCollection.get()), provider_);
     const auto& tiledProvider = std::dynamic_pointer_cast<IMapTiledDataProvider>(provider_);
+    const auto rasterProvider = std::dynamic_pointer_cast<IRasterMapLayerProvider>(provider_);
+    const bool retainOverviewZoom = isMapLayer && rasterProvider && rasterProvider->retainsOverviewZoom();
 
     if (isMapLayer || isElevationData || isMap3DObjects)
     {
@@ -1196,6 +1198,27 @@ void OsmAnd::MapRendererResourcesManager::requestNeededTiledResources(
                     resourcesCollection->setLoadingState(true);
                     renderer->setSymbolsLoading(true);
                 }
+                requestNeededResource(resource, detailedZoom);
+            }
+        }
+
+        // Keep one coarser zoom in memory so fast pans and zoom-outs have something to show.
+        if (retainOverviewZoom && activeZoom == currentZoom && IRasterMapLayerProvider::RasterLayerOverviewZoomOffset < 0)
+        {
+            const int overviewZoomShift = -IRasterMapLayerProvider::RasterLayerOverviewZoomOffset;
+            const int overviewZoomInt = static_cast<int>(activeZoom) + IRasterMapLayerProvider::RasterLayerOverviewZoomOffset;
+            if (overviewZoomShift <= maxMissingDataZoomShift
+                && overviewZoomInt >= static_cast<int>(minZoom)
+                && overviewZoomInt <= static_cast<int>(maxZoom))
+            {
+                const auto overviewZoom = static_cast<ZoomLevel>(overviewZoomInt);
+                const auto overviewTileId = Utilities::getTileIdOverscaledByZoomShift(activeTileId, overviewZoomShift);
+                std::shared_ptr<MapRendererBaseTiledResource> resource;
+                resourcesCollection->obtainOrAllocateEntry(
+                    resource,
+                    overviewTileId,
+                    overviewZoom,
+                    resourceAllocator);
                 requestNeededResource(resource, detailedZoom);
             }
         }
@@ -2409,6 +2432,8 @@ void OsmAnd::MapRendererResourcesManager::cleanupJunkResources(
             const bool isSymbols = resourcesType == MapRendererResourceType::Symbols;
             const bool isMap3DObjects = resourcesType == MapRendererResourceType::Map3DObjects;
             const bool checkVisible = !isElevationData;
+            const auto rasterProvider = std::dynamic_pointer_cast<IRasterMapLayerProvider>(dataProvider);
+            const bool retainOverviewZoom = isMapLayer && rasterProvider && rasterProvider->retainsOverviewZoom();
 
             if (tiledProvider && tiledProvider->isMetaTiled())
             {
@@ -2633,6 +2658,23 @@ void OsmAnd::MapRendererResourcesManager::cleanupJunkResources(
                     }
                     if (checkVisible && !visibleTilesOfZoom->contains(activeTileId))
                         continue;
+
+                    // Retain the overview zoom even after the current zoom is complete.
+                    if (retainOverviewZoom && activeZoom == currentZoom && IRasterMapLayerProvider::RasterLayerOverviewZoomOffset < 0)
+                    {
+                        const int overviewZoomShift = -IRasterMapLayerProvider::RasterLayerOverviewZoomOffset;
+                        const int overviewZoomInt = static_cast<int>(activeZoom) + IRasterMapLayerProvider::RasterLayerOverviewZoomOffset;
+                        if (overviewZoomShift <= maxMissingDataZoomShift
+                            && overviewZoomInt >= static_cast<int>(minZoom)
+                            && overviewZoomInt <= static_cast<int>(maxZoom))
+                        {
+                            const auto overviewTileId = Utilities::getTileIdOverscaledByZoomShift(
+                                activeTileId,
+                                overviewZoomShift);
+                            neededTilesMap[static_cast<ZoomLevel>(overviewZoomInt)].insert(overviewTileId);
+                        }
+                    }
+
                     // If resources have complete set or match for this tile, use only that
                     const auto neededZoomForTile = extraZoom != neededZoom
                         && extraDetailedTiles.contains(activeTileId) ? extraZoom : neededZoom;

@@ -61,6 +61,11 @@ namespace OsmAnd
         void setNetworkAccessPermission(bool allowed);
         const bool& networkAccessAllowed;
 
+        virtual bool retainsOverviewZoom() const Q_DECL_OVERRIDE
+        {
+            return true;
+        }
+
         virtual MapStubStyle getDesiredStubsStyle() const;
 
         virtual float getTileDensityFactor() const;

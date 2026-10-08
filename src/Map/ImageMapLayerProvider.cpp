@@ -203,7 +203,9 @@ void OsmAnd::ImageMapLayerProvider::obtainDataAsync(
             std::shared_ptr<Metric> metric;
             const auto& r = MapDataProviderHelpers::castRequest<Request>(*requestClone);
             bool requestSucceeded = false;
-            if (r.zoom == self->getLastRequestedZoom())
+            if (r.zoom == self->getLastRequestedZoom()
+                || (self->retainsOverviewZoom()
+                    && IRasterMapLayerProvider::isRetainedOverviewZoom(r.zoom, self->getLastRequestedZoom())))
                 requestSucceeded = self->obtainData(*requestClone, data, collectMetric ? &metric : nullptr);
 
             callback(self.get(), requestSucceeded, data, metric);
@@ -236,6 +238,9 @@ OsmAnd::ZoomLevel OsmAnd::ImageMapLayerProvider::getLastRequestedZoom() const
 void OsmAnd::ImageMapLayerProvider::setLastRequestedZoom(const ZoomLevel zoomLevel)
 {
     QWriteLocker scopedLocker(&_lock);
+
+    if (retainsOverviewZoom() && IRasterMapLayerProvider::isRetainedOverviewZoom(zoomLevel, _lastRequestedZoom))
+        return;
 
     if (_lastRequestedZoom != zoomLevel)
         _priority = 0;
